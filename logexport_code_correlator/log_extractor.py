@@ -2,6 +2,7 @@ import sys
 import re
 import os
 import csv 
+import logging
 
 class BaseLogLineExtractor:
     def __init__(self):
@@ -14,12 +15,16 @@ class CLogLineExtractor(BaseLogLineExtractor):
     def __init__():
         pass
     
-    def extract_logs(self, codebase_folder: str, delimiters: list) -> None:
-        
+    def extract_logs(self, codebase_folder: str, log_statements: list) -> None:
+        logging.info(f"Extracting strings from codebase {codebase_folder}"
+                    f" having log statements {log_statements}")
+        for file in codebase_folder:
+            log_lines = re.findall( r'MPS_DEBUG_LOG\((.*)\)', text )
         
     def to_csv(self, filename: str = "log_stats_template.csv") -> None:
         # grep -r -E 'MPSLogger::ins|MPS_DEBUG_LOG|MPS_INFORMATION_LOG|MPS_CRITICAL_LOG|MPS_FATAL_LOG
         # |MPS_ERROR_LOG|MPS_WARNING_LOG|MPS_NOTICE_LOG|MPS_TRACE_LOG' * | python extract_stings.py
+        # re.finditer( r'MPS_DEBUG_LOG((.*?))', text )
 
         fields = ['file', 'log_line', 'query', 'events', 'bytes']
         rows = []
