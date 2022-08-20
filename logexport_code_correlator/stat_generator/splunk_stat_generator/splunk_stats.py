@@ -33,9 +33,10 @@ threshold = int(sys.argv[5])
 #     'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
 # }
 class SplunkLogStatGenerator:
-    def __init__(self, base_url, headers):
+    def __init__(self, base_url, headers, index):
         self.fields = ["file", "log", "events", "bytes"]
         self.splunk_client = SplunkClient(base_url, headers)
+        self.index = index
 
     def get_stats(self, sid):
         total_time=0
@@ -94,9 +95,7 @@ class SplunkLogStatGenerator:
 
     def batch_analyse_dump(self, log_queries, threshold):
         batched_query = self.prepare_batch_query(log_queries)
-        query = 'index="production_ns_mas" %s | rex mode=sed "s/([\\r\\n]+)/##LF##/g"'%(batched_query) + \
-            ' | makemv _raw delim="##LF##" | rename _raw as raw | mvexpand raw | rename raw as _raw|' + \
-            ' search %s | eval bytes=len(_raw) | stats sum(bytes) as bytes'%(batched_query)
+        query = self.generate_splunk_query(batched_query)
         sid = self.splunk_client.createSplunkJob(query)
         if sid == "UNAUTHORIZED" or sid == 'Job Creation Failed':
             print('Exiting for sid=%s'%(sid))
@@ -112,9 +111,7 @@ class SplunkLogStatGenerator:
 
     def sequence_analyse_dump(self, log_queries):
         for log_query in log_queries:
-            query = 'index="production_ns_mas" %s | rex mode=sed "s/([\\r\\n]+)/##LF##/g"'%(log_query[1]) + \
-                ' | makemv _raw delim="##LF##" | rename _raw as raw | mvexpand raw | rename raw as _raw|' + \
-                ' search %s | eval bytes=len(_raw) | stats sum(bytes) as bytes'%(log_query[1])
+            query = self.generate_splunk_query(log_query[1])
             sid = self.splunk_client.createSplunkJob(query)
             if sid == "UNAUTHORIZED" or sid == 'Job Creation Failed':
                 print('Exiting for sid=%s'%(sid))
@@ -124,6 +121,12 @@ class SplunkLogStatGenerator:
             self.error_handle_stats(tot_events, tot_bytes)
             self.dump_csv([[ log_query[0], log_query[1], tot_events, tot_bytes]])
 
+    def generate_splunk_query(self, log_filter):
+        splunk_query = f'index="{self.index}" {log_filter} | rex mode=sed "s/([\\r\\n]+)/##LF##/g"' \
+                ' | makemv _raw delim="##LF##" | rename _raw as raw | mvexpand raw | rename raw as _raw|' \
+                f' search {log_filter} | eval bytes=len(_raw) | stats sum(bytes) as bytes'
+        return splunk_query
+ 
     def analyse_log_csv(self, file_name, start_index=0, batch_size=1, threshold=10000000):
         with open(file_name) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter='\t')
