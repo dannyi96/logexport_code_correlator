@@ -1,0 +1,1 @@
+Tool to correlate and find which log lines in your codebase is conributing to high log size in Splunk
