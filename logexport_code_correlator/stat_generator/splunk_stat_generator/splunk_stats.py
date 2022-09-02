@@ -1,5 +1,6 @@
 #! /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
 import sys
+sys.path.append('/mnt/c/Users/danny/scratchpad/logexport_code_correlator/logexport_code_correlator')
 import csv
 import time
 from stat_generator.splunk_stat_generator.splunk_client import SplunkClient 
@@ -9,29 +10,13 @@ from stat_generator.splunk_stat_generator.splunk_client import SplunkClient
 #     print("  Expected usage: ./get_log_stats.py <input_log_csv> <output_log_csv> <start_index> <batch_size> <threshold>")
 #     exit()
 
-input_log_csv = sys.argv[1]
-output_log_csv = sys.argv[2]
-start_index = int(sys.argv[3])
-batch_size = int(sys.argv[4])
-threshold = int(sys.argv[5])
+# input_log_csv = sys.argv[1]
+# output_log_csv = sys.argv[2]
+# start_index = int(sys.argv[3])
+# batch_size = int(sys.argv[4])
+# threshold = int(sys.argv[5])
 
-# BASE_URL =  'https://citrixsys.splunkcloud.com/en-US/splunkd/__raw/servicesNS/danielis/search_citrixcloud/search/jobs'
 
-# HEADERS = {
-#     'Connection': 'keep-alive',
-#     'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98", "Google Chrome";v="98"',
-#     'sec-ch-ua-mobile': '?0',
-#     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
-#     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-#     'Accept': 'text/javascript, text/html, application/xml, text/xml, */*',
-#     'X-Requested-With': 'XMLHttpRequest',
-#     'sec-ch-ua-platform': 'macOS',
-#     'Origin': 'https://citrixsys.splunkcloud.com',
-#     'Sec-Fetch-Site': 'same-origin',
-#     'Sec-Fetch-Mode': 'cors',
-#     'Sec-Fetch-Dest': 'empty',
-#     'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
-# }
 class SplunkLogStatGenerator:
     def __init__(self, base_url, headers, index):
         self.fields = ["file", "log", "events", "bytes"]
@@ -64,7 +49,7 @@ class SplunkLogStatGenerator:
         
         return (eventCount, total_bytes)
 
-    def dump_csv(self, new_rows):
+    def dump_csv(self, new_rows, output_log_csv='OUT.csv'):
         with open(output_log_csv, 'a') as output_log_csv_fp: 
             # creating a csv writer object 
             csvwriter = csv.writer(output_log_csv_fp, delimiter='\t') 
@@ -101,7 +86,7 @@ class SplunkLogStatGenerator:
             print('Exiting for sid=%s'%(sid))
             exit()
         time.sleep(10)
-        tot_events, tot_bytes = self.splunk_client.get_stats(sid)
+        tot_events, tot_bytes = self.get_stats(sid)
         self.error_handle_stats(tot_events, tot_bytes)
         dump_status = False
         if self.strip_metachars(tot_events) <= threshold:
@@ -138,10 +123,26 @@ class SplunkLogStatGenerator:
                 if batch_analyse_dump_status == False:
                     self.sequence_analyse_dump(batched_rows)
 
-# print('='*200)
-# print("input_log_csv: %s, prefix: %s, start_index: %s, threshold: %s"
-#     %(input_log_csv, start_index, batch_size, threshold))
-
-# reload_cookies()
-# analyse_log_csv(input_log_csv, start_index, batch_size, threshold)
-# print('='*200)
+if __name__ == '__main__':
+    print('='*200)
+    splunk_stat_generator = SplunkLogStatGenerator(base_url='https://citrixsys.splunkcloud.com/en-US/splunkd/__raw/servicesNS/danielis/search_citrixcloud/search/jobs',
+                                                   headers={
+                                                    'Connection': 'keep-alive',
+                                                    'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98", "Google Chrome";v="98"',
+                                                    'sec-ch-ua-mobile': '?0',
+                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36',
+                                                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                                    'Accept': 'text/javascript, text/html, application/xml, text/xml, */*',
+                                                    'X-Requested-With': 'XMLHttpRequest',
+                                                    'sec-ch-ua-platform': 'macOS',
+                                                    'Origin': 'https://citrixsys.splunkcloud.com',
+                                                    'Sec-Fetch-Site': 'same-origin',
+                                                    'Sec-Fetch-Mode': 'cors',
+                                                    'Sec-Fetch-Dest': 'empty',
+                                                    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                                                    'Cookie': "ext_name=ojplmecpdpgccookcobabopnaifgidhf; splunkweb_csrf_token_8443=8295557155302205411; session_id_8443=da6d52479f592a874153bde8640bd30654529243; token_key=8295557155302205411; experience_id=23d56660-fb95-27cc-5464-10c6bdf8f325; 0.0.0=AP-7SBC7L5BZ8ML-2; spg_session=23d56660-fb95-27cc-5464-10c6bdf8f325; splunk_csrf_token=8295557155302205411; apt.sid=AP-7SBC7L5BZ8ML-2-1661033690407-74443246; apt.uid=AP-7SBC7L5BZ8ML-2-1661033690408-28776614.0.2.03909a4c-056e-4c08-b565-6efe986e76a5; splunkd_8443=0iFe2vQYBuWVJdrvj2dJTuqlnA537MZajQi5B46JNdc4HpP3j7AJAygu0qSPwIcV_abH8setZdWr5U1XuU5PzU4AY7wy5j0qwZuxu9gxpCUc0y_TVGBoFDHonVciNGoLI2IT6oLHT23xL4Q58jfGGZ1^gXYXlGSud22pI1Am1QV9WumbBlE7OegyQUDU1lVi_ATcOBw0_lxpmf87CrbhHYnPJEiYB6FqkOa^; AWSELB=67092D7F040FD11F00E7B075920502DA1D506737C0B61BC3F3261A59C21F55F91661BD90CE33D4A0EC81E3B3C8DAE4D0B5A0557C70B6EEC3154A1495F9C7124BE2A77C05DF2189AFF876BBF8C24473705E036D4D46",
+                                                    'X-Splunk-Form-Key': "8295557155302205411"
+                                                },
+                                                index='production_ns_mas')
+    splunk_stat_generator.analyse_log_csv('log_stats_template.csv', 0, 10, 100000000)
+    print('='*200)
