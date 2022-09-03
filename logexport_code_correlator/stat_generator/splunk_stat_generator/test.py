@@ -3,17 +3,15 @@ import json
 import time
 from bs4 import BeautifulSoup
 import pyotp
+from requests_html import HTMLSession
 
 base_url = "https://citrixsys.splunkcloud.com/en-US/"
+htmlSession = HTMLSession()
 
 ## Request 1 
 with requests.Session() as s:
-#      r = requests.post('https://citrix.okta.com/api/v1/authn', data=json.dumps({"password":"dummy$%^","username":"danielis", "options":{"warnBeforePasswordExpired":True,"multiOptionalFactorEnroll":True}}), headers={'content-type': 'application/json', 'accept': 'application/json'})
-#      print(r.content)
-
      # Request 1 - attempt to access URL.
      # obtain sso url, samlRequest & relay_state
-     
      r = requests.get(base_url)
      soup = BeautifulSoup(r.content, 'html.parser')
      formElement = soup.find('form')
@@ -26,6 +24,13 @@ with requests.Session() as s:
      print(f'samlRequest={samlRequest}')
      print(f'relayState={relayState}')
 
+     r = htmlSession.get("https://citrixsys.splunkcloud.com/en-US/account/login?return_to=%2Fen-US%2F")
+     r.html.render()
+     print(r)
+     
+     
+     exit()
+     
      # Request 2
      r = requests.post('https://citrix.okta.com/app/citrix_splunkcloudcitrixsysmdca_1/exkvp6838nPMpNIA80x7/sso/saml', 
           data=f'RelayState={relayState}&SAMLRequest={samlRequest}')

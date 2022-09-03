@@ -637,6 +637,7 @@ curl 'https://citrix.okta.com/auth/services/devicefingerprint' \
 # set-cookie: t=sea; Path=/
 # set-cookie: DT=DI0fshqK0bJQfKEF2jmkQfBVA;Version=1;Path=/;Max-Age=7123635;Secure;Expires=Wed, 23 Nov 2022 06:17:49 GMT;HttpOnly;SameSite=None
 # set-cookie: sid=""; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/
+# x-okta-request-id: YxNyiaUPzYGfVZMPB1E10wAAARI
 
 
 curl 'https://citrix.okta.com/api/v1/internal/device/nonce' \
@@ -852,5 +853,43 @@ curl 'https://citrixsys.splunkcloud.com/en-US/' \
   --compressed
 
 # Set-Cookie: session_id_8443=d354bc4749324d8322b270fb36f6f9ae1969f70e; expires=Thu, 01 Sep 2022 23:30:44 GMT; HttpOnly; Max-Age=14400; Path=/; secure
+
+
+-------------------------------------
+GET https://citrixsys.splunkcloud.com/en-US/
+GET https://citrixsys.splunkcloud.com/en-US/account/login?return_to=%2Fen-US%2F
+GET https://citrixsys.splunkcloud.com/en-US/static/@0/img/splunk/progress-bar-animation.gif
+GET https://citrixsys.splunkcloud.com/favicon.ico
+POST https://us2.saml.cas.ms/saml/sso_login?orig_idp=https%3A%2F%2Fcitrix.okta.com%2Fapp%2Fcitrix_splunkcloudcitrixsysmdca_1%2Fexkvp6838nPMpNIA80x7%2Fsso%2Fsaml&mcastenant=73556425
+POST https://citrix.okta.com/app/citrix_splunkcloudcitrixsysmdca_1/exkvp6838nPMpNIA80x7/sso/saml
+GET https://ok2static.oktacdn.com/assets/js/sdk/okta-signin-widget/6.6.1/js/okta-sign-in.min.js
+GET https://ok2static.oktacdn.com/assets/js/sdk/okta-signin-widget/6.6.1/css/okta-sign-in.min.css
+GET https://ok2static.oktacdn.com/assets/loginpage/css/loginpage-theme.6ca7f7a516a56275837982a82a0a7533.css
+GET https://citrix.okta.com/api/internal/brand/theme/style-sheet?touch-point=SIGN_IN_PAGE&v=28d025743b8fc0765a7cfe4c08fdf2a9
+GET https://ok2static.oktacdn.com/fs/bco/4/fs0vpnfvboMAVmC2S0x7
+
+GET https://ok2static.oktacdn.com/assets/js/mvc/loginpage/initLoginPage.pack.47db94d2da847bad7e35886ca1ebf00e.js
+  from JS https://citrix.okta.com/app/citrix_splunkcloudcitrixsysmdca_1/exkvp6838nPMpNIA80x7/sso/saml ( 3 times )
+
+GET https://login.okta.com/discovery/iframe.html
+  https://ok2static.oktacdn.com/assets/js/mvc/loginpage/initLoginPage.pack.47db94d2da847bad7e35886ca1ebf00e.js
+  https://citrix.okta.com/app/citrix_splunkcloudcitrixsysmdca_1/exkvp6838nPMpNIA80x7/sso/saml ( setTimeout )
+
+GET https://ok2static.oktacdn.com/fs/bco/1/fs0pg3zx5fZ7HP3II0x7
+  https://ok2static.oktacdn.com/assets/js/sdk/okta-signin-widget/6.6.1/js/okta-sign-in.min.js
+  https://ok2static.oktacdn.com/assets/js/mvc/loginpage/initLoginPage.pack.47db94d2da847bad7e35886ca1ebf00e.js
+  https://citrix.okta.com/app/citrix_splunkcloudcitrixsysmdca_1/exkvp6838nPMpNIA80x7/sso/saml
+
+GET https://citrix.okta.com/favicon.ico
+
+GET https://ok2static.oktacdn.com/assets/js/sdk/okta-signin-widget/6.6.1/img/ui/forms/checkbox-sign-in-widget.png
+GET https://ok2static.oktacdn.com/assets/js/sdk/okta-signin-widget/6.6.1/font/montserrat-light-webfont.woff
+
+GET https://login.okta.com/lib/discoveryIframe-2692d5ddd2b91a4c061d.min.js
+
+GET https://citrix.okta.com/auth/services/devicefingerprint
+
+
+
 
 
