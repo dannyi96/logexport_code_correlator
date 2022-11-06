@@ -1,0 +1,10 @@
+file	query	>70062218	>25791445721
+af_plugin/AfPluginConfigs.cpp	"""AfPluginConfigs::init() called """	4	755
+af_plugin/af_plugin.cpp	"""Loading AF Plugin"""	3480	13218849
+af_plugin/af_plugin.cpp	"""Skipping table creations for af_plugin"""	20	4658
+af_plugin/af_plugin.cpp	"""Creating Active HDX/GW table in af_plugin"""	0	0
+af_plugin/af_plugin.cpp	"""Dumping coverage for AF Plugin started"""	0	0
+af_plugin/af_plugin.cpp	"""Dumping coverage for AF Plugin completed"""	0	0
+af_plugin/af_plugin.cpp	"""GCOV coverage for AF Plugin started"""	0	0
+af_plugin/af_plugin.cpp	"""GCOV coverage for AF Plugin completed"""	0	0
+af_plugin/handlers/related_desktop_session_handler.cpp	"""related_desktop_session_handler :: order_by """	0	0

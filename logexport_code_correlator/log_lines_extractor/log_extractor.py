@@ -3,15 +3,9 @@ import re
 import os
 import csv 
 import logging
-
-class BaseLogLineExtractor:
-    def __init__(self):
-        pass
+from logexport_code_correlator.log_lines_extractor.base_extractor import BaseLogLinesExtractor
     
-    def extract_logs(self, codebase_folder: str, delimiters: list) -> None:
-        pass
-    
-class CLogLineExtractor(BaseLogLineExtractor):
+class RegexLogLineExtractor(BaseLogLinesExtractor):
     def __init__():
         pass
     
