@@ -8,3 +8,23 @@ af_plugin/af_plugin.cpp	"""Dumping coverage for AF Plugin completed"""	0	0
 af_plugin/af_plugin.cpp	"""GCOV coverage for AF Plugin started"""	0	0
 af_plugin/af_plugin.cpp	"""GCOV coverage for AF Plugin completed"""	0	0
 af_plugin/handlers/related_desktop_session_handler.cpp	"""related_desktop_session_handler :: order_by """	0	0
+file	query	41	5438	UPPER_BOUND
+af_plugin/AfPluginConfigs.cpp	"""AfPluginConfigs::init() called """	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""Loading AF Plugin"""	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""Skipping table creations for af_plugin"""	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""Creating Active HDX/GW table in af_plugin"""	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""Dumping coverage for AF Plugin started"""	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""Dumping coverage for AF Plugin completed"""	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""GCOV coverage for AF Plugin started"""	41	5438	UPPER_BOUND
+af_plugin/af_plugin.cpp	"""GCOV coverage for AF Plugin completed"""	41	5438	UPPER_BOUND
+af_plugin/handlers/related_desktop_session_handler.cpp	"""related_desktop_session_handler :: order_by """	41	5438	UPPER_BOUND
+af_plugin/handlers/related_desktop_session_handler.cpp	"""related_desktop_session_handler::tabular_report2_obj_finish_callback_handler, uptime is less than interval time,  interval bytes should be equal to total bytes."""	10	1301	UPPER_BOUND
+af_plugin/handlers/related_desktop_session_handler.cpp	"""related_desktop_session_handler::tabular_report_obj_finish_callback_handler, uptime is less than interval time,  interval bytes should be equal to total bytes."""	10	1301	UPPER_BOUND
+af_plugin/handlers/si_tcp_counter_handler.cpp	"""si_tcp_counter_handler::get_apps_rpt duration_summary """	10	1301	UPPER_BOUND
+af_plugin/handlers/vpn_active_sessions_handler.cpp	"""vpn_active_sessions_handler::doPut """	10	1301	UPPER_BOUND
+af_plugin/handlers/http_header_handler.cpp	"""AfAnalyticsProcessor::executePutRequest ... resource_type """	10	1301	UPPER_BOUND
+af_plugin/handlers/related_ica_session_handler.cpp	"""related_ica_session_handler :: order_by """	10	1301	UPPER_BOUND
+af_plugin/handlers/related_ica_session_handler.cpp	"""related_ica_session_handler::tabular_report_obj_finish_callback_handler, uptime is less than interval time,  interval bytes should be equal to total bytes."""	10	1301	UPPER_BOUND
+af_plugin/handlers/uri_handler.cpp	"""uri_handler::get_response Invalid table type found. Returning without executing report."""	10	1301	UPPER_BOUND
+af_plugin/handlers/uri_handler.cpp	"""uri_handler::doGet order_by is"""	10	1301	UPPER_BOUND
+af_plugin/handlers/uri_handler.cpp	"""uri_handler::get_response table_type is"""	10	1301	UPPER_BOUND
