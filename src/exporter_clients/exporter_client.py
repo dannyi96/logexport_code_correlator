@@ -1,7 +1,10 @@
 class ExporterClient:
 
-    def __init__(self):
+    def __init__(self, *kwargs):
         pass
 
-    def generate_log_stats(self):
+    def get_stats_for_logs(self, log_lines):
+        pass
+
+    def get_stats_for_log(self, log_line):
         pass
