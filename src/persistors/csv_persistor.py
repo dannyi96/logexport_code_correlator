@@ -8,6 +8,6 @@ class CSVPersistor(BasePersistor):
     def dump_records(self, records):
          with open(self.output_file, 'a') as output_log_fp: 
             # creating a csv writer object 
-            csvwriter = csv.writer(output_log_csv_fp, delimiter='\t') 
+            csvwriter = csv.writer(output_log_fp, delimiter='\t') 
             # writing the data rows 
-            csvwriter.writerows(record)
+            csvwriter.writerows(records)

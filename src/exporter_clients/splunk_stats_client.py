@@ -6,6 +6,7 @@ import requests
 import time
 import splunklib.client
 import splunklib.results
+from logexport_code_correlator.persistor.csvpersistor import CSVPersistor
 
 class SplunkStatsClient(BaseStatsClient):
     def __init__(self, host, username, password, index, scheme='https'):
@@ -22,6 +23,7 @@ class SplunkStatsClient(BaseStatsClient):
                     )
         self.splunk_client = splunk_client
         self.index = index
+        self.persistor = CSVPersistor()
 
     def generate_log_stats(self, multiprocessing=False):
         pass
@@ -101,10 +103,6 @@ class SplunkStatsClient(BaseStatsClient):
 
     def prepare_batch_query(self, log_queries):
         return " OR ".join([ "( " + log_query[1] + " )" for log_query in log_queries])
-
-    def dump_batch_to_csv(self, batched_rows, tot_events, tot_bytes):
-        new_rows = [[row[0], row[1], tot_events, tot_bytes, "UPPER_BOUND"] for row in batched_rows ]
-        self.persist_stats_data(new_rows)
     
     def batch_analyse_dump(self, log_queries, threshold):
         batched_query = self.prepare_batch_query(log_queries)
@@ -119,7 +117,8 @@ class SplunkStatsClient(BaseStatsClient):
         dump_status = False
         if tot_events <= threshold:
             dump_status = True
-            self.dump_batch_to_csv(log_queries, tot_events, tot_bytes)
+            self.persistor.dump_records([[row[0], row[1], tot_events, tot_bytes, "UPPER_BOUND"] 
+                                            for row in batched_rows ])
         
         return dump_status            
 
@@ -133,7 +132,7 @@ class SplunkStatsClient(BaseStatsClient):
             isJobComplete, results, tot_events  = self.splunk_client.getSplunkJobResults(job, timeout=120)
             tot_bytes = results[0]['bytes']
             accuracy = "PRECISE" if isJobComplete == True else "LOWER_BOUND"
-            self.persist_stats_data([[ log_query[0], log_query[1], tot_events, tot_bytes, accuracy]])
+            self.persistor.dump_records([[ log_query[0], log_query[1], tot_events, tot_bytes, accuracy]])
 
     def generate_splunk_query(self, log_filter):
         splunk_query = (f"search index={self.index} {log_filter} "
