@@ -29,28 +29,30 @@ class SplunkClient(ExporterClient):
 
 
     def get_stats_for_log(self, log_line, **kwargs):
-        results = ( False, [], 0 )
+        isJobComplete, tot_bytes, tot_events = (False, -1, -1)
         try:
             index = kwargs.get('index', 'main')
             query = self.query_generator.generate_query_for_logs(log_line, index=index)
             job = self.client.jobs.create(query)
-            results = self.__getSplunkJobResults(job)
+            isJobComplete, results, tot_events = self.__getSplunkJobResults(job)
+            tot_bytes = results[0]['bytes']
         except Exception as ex:
-            print(f"Exception in creating Splunk job with query {query}: {ex}")
+            print(f"Exception in getting stats from Splunk for query {query}: {ex}")
 
-        return results
+        return (isJobComplete, tot_bytes, tot_events)
 
     def get_stats_for_logs(self, log_lines, **kwargs):
-        results = ( False, [], 0 )
+        isJobComplete, tot_bytes, tot_events = (False, -1, -1)
         try:
             index = kwargs.get('index', 'main')
             query = self.query_generator.generate_query_for_logs(log_lines, index=index)
             job = self.client.jobs.create(query)
-            results = self.__getSplunkJobResults(job)
+            isJobComplete, results, tot_events = self.__getSplunkJobResults(job)
+            tot_bytes = results[0]['bytes']
         except Exception as ex:
-            print(f"Exception in creating Splunk job with query {query}: {ex}")
+            print(f"Exception in getting stats from Splunk for query {query}: {ex}")
 
-        return results
+        return (isJobComplete, tot_bytes, tot_events)
 
 
     def __getSplunkJobResults(self, job, timeout=180):
