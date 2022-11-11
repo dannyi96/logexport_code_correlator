@@ -1,8 +1,10 @@
 import csv
+from src.persistors.csv_persistor import CSVPersistor
 
 class StatsGenerator:
     def __init__(self, exporter_client):
         self.client = exporter_client
+        self.persistor = CSVPersistor(file='log_stats.csv')
     
     def generate_stats(self, **kwargs):
         input_file_name = kwargs['filename']
