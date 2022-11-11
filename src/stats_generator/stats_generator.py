@@ -1,4 +1,5 @@
 import csv
+from src.data_models.log_stat import LogStat
 from src.data_persistors.csv_persistor import CSVPersistor
 from src.log_strings_extractor.regex_log_extractor import RegexLogLineExtractor
 
@@ -37,7 +38,7 @@ class StatsGenerator:
         dump_status = False
         if tot_events <= threshold:
             dump_status = True
-            self.persistor.dump_records([self.create_obj(log_query[0], log_query[1], tot_events, tot_bytes, "UPPER_BOUND")
+            self.persistor.dump_records([LogStat(log_query[0], log_query[1], tot_events, tot_bytes, "UPPER_BOUND").as_dict()
                                             for log_query in log_queries ])
         
         return dump_status            
@@ -47,17 +48,8 @@ class StatsGenerator:
         for log_query in log_queries:
             isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_log(log_query)
             accuracy = "PRECISE" if isJobComplete == True else "LOWER_BOUND"
-            self.persistor.dump_record(self.create_obj(log_query[0], log_query[1], tot_events, tot_bytes, accuracy))
+            self.persistor.dump_record(LogStat(log_query[0], log_query[1], tot_events, tot_bytes, accuracy).as_dict())
 
-    def create_obj(self, file, log, tot_events, tot_bytes, accuracy):
-        obj = {
-            'filename': file,
-            'log': log,
-            'tot_events': tot_events,
-            'tot_bytes': tot_bytes,
-            'accuracy': accuracy
-        }
-        return obj
 
 if __name__ == '__main__':
     from src.exporter_clients.splunk_client import SplunkClient
