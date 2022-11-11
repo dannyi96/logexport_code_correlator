@@ -1,5 +1,5 @@
 import csv
-from src.persistors.base_persistor import BasePersistor
+from src.data_persistors.base_persistor import BasePersistor
 
 class CSVPersistor(BasePersistor):
 

@@ -4,7 +4,7 @@ import os
 import csv 
 import logging
 from src.log_strings_extractor.log_strings_extractor import LogStringsExtractor
-from src.persistors.csv_persistor import CSVPersistor
+from src.data_persistors.csv_persistor import CSVPersistor
 
 
 class RegexLogLineExtractor(LogStringsExtractor):

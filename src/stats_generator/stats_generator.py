@@ -1,40 +1,46 @@
 import csv
 from src.data_models.log_stat import LogStat
 from src.data_persistors.csv_persistor import CSVPersistor
+from src.data_readers.csv_reader import CSVReader
 from src.log_strings_extractor.regex_log_extractor import RegexLogLineExtractor
 
 class StatsGenerator:
-    def __init__(self, exporter_client):
+    def __init__(self, exporter_client, log_extractor, output_file='log_stats.csv', **kwargs):
         self.client = exporter_client
-        self.log_extractor = RegexLogLineExtractor()
-        self.persistor = CSVPersistor(file='log_stats.csv')
+        # extract logs
+        self.logline_regex = kwargs.get("logline_regex", r'print\((.*)\)')
+        self.codebase_dir = kwargs.get("codebase_dir", ".")
+        self.logs_file = kwargs.get("logs_file", 'log.csv')
+        self.start_index = kwargs.get('start_index', 0)
+        self.batch_size = kwargs.get('batch_size', 10)
+        self.threshold = kwargs.get('threshold', 10^6)
+        
+        self.log_extractor = log_extractor
+        
+        self.persistor = CSVPersistor(file=output_file, 
+                                      headers=['filename', 'logline', 
+                                               'accuracy', 'tot_events', 
+                                               'tot_bytes'])
     
     def generate_stats(self, **kwargs):
-        input_file_name = kwargs['filename']
-        start_index = kwargs.get('start_index', 0)
-        batch_size = kwargs.get('batch_size', 1)
-        threshold = kwargs.get('threshold', 10^6)
         # extract logs
-        self.log_extractor.extract_logs(input_file_name)
+        self.log_extractor.extract_logs(self.codebase_dir)
+        self.log_csv_reader = CSVReader(self.logs_file)
         # get log stats
-        self.__analyse_log_csv('log.csv', start_index=start_index, 
-                               batch_size=batch_size, threshold=threshold)
+        self.__analyse_log_csv(start_index=self.start_index, 
+            batch_size=self.batch_size, 
+            threshold=self.threshold
+        )
     
-    def __analyse_log_csv(self, file_name, start_index=0, batch_size=1, threshold=10000000):
-        with open(file_name) as csv_file:
-            csv_reader = csv.DictReader(csv_file, delimiter='\t')
-            # csv_reader = csv.reader(csv_file, delimiter='\t')
-            lines = list(csv_reader)
-
-            for row_no in range(start_index, len(lines), batch_size):
-                batched_rows = [elem['logline'] for elem in lines[row_no: row_no+batch_size]]
-                print(batched_rows)
-                batch_analyse_dump_status = self.batch_analyse_dump(batched_rows, threshold)
-                if batch_analyse_dump_status == False:
-                    self.sequence_analyse_dump(batched_rows)
+    def __analyse_log_csv(self, start_index=0, batch_size=10, threshold=10000000):
+        batched_rows = self.log_csv_reader.read_batch(start_index, batch_size, 'logline')
+        print(batched_rows)
+        batch_analyse_dump_status = self.batch_analyse_dump(batched_rows, threshold)
+        if batch_analyse_dump_status == False:
+            self.sequence_analyse_dump(batched_rows)
 
     def batch_analyse_dump(self, log_queries, threshold):
-        isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_log(log_queries)
+        isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_logs(log_queries)
         dump_status = False
         if tot_events <= threshold:
             dump_status = True
@@ -58,8 +64,14 @@ if __name__ == '__main__':
                                 username='danielis', 
                                 password='danielis',
                                 index='main')
-    stat_generator = StatsGenerator(splunk_client)
-    stat_generator.generate_stats(filename=os.getcwd()+'/tests/code_files/',
+    log_extractor = RegexLogLineExtractor(
+            logline_regex = r'print\((.*)\)', 
+            logs_file = 'log.csv'
+    )
+    stat_generator = StatsGenerator(splunk_client,
+                                    log_extractor,
+                                codebase_dir=os.getcwd()+'/tests/code_files/',
                                   start_index=0,
-                                  batch_size=1,
+                                  batch_size=10,
                                  threshold=321401235)
+    stat_generator.generate_stats()
