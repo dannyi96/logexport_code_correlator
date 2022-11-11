@@ -10,7 +10,7 @@ from src.persistors.csv_persistor import CSVPersistor
 class RegexLogLineExtractor(LogStringsExtractor):
     def __init__(self, **kwargs) -> None:
         self.logline_regex = kwargs.get("logline_regex", r'print\((.*)\)')
-        self.persistor = CSVPersistor(file='log.csv')
+        self.persistor = CSVPersistor(file='log.csv', headers=['filename', 'logline'])
     
     def extract_logs(self, codebase_folder: str) -> None:
         print(f"Extracting strings from codebase {codebase_folder}"
