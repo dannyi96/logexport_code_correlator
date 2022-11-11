@@ -3,23 +3,26 @@ import re
 import os
 import csv 
 import logging
-from src.log_strings_extractor.base_extractor import LogStringsExtractor
+from src.log_strings_extractor.log_strings_extractor import LogStringsExtractor
 from src.persistors.csv_persistor import CSVPersistor
 
 
 class RegexLogLineExtractor(LogStringsExtractor):
     def __init__(self, **kwargs) -> None:
         self.logline_regex = kwargs.get("logline_regex", r'print\((.*)\)')
-        self.persistor = CSVPersistor(file='log.csv', headers=['filename', 'logline'])
+        self.logs_file = kwargs.get("logs_file", 'log.csv')
+        self.persistor = CSVPersistor(file=self.logs_file, headers=['filename', 'logline'])
     
     def extract_logs(self, codebase_folder: str) -> None:
         print(f"Extracting strings from codebase {codebase_folder}"
               f" having log statements matching regex {self.logline_regex}")
         results = []
+        
         for subdir, _, files in os.walk(codebase_folder):
+            print('inside')
             for file in files:
                 record = {}
-                record['file'] = file
+                
                 
                 file_path = os.path.join(subdir, file)
                 with open(file_path, 'r') as file_p:
@@ -29,8 +32,10 @@ class RegexLogLineExtractor(LogStringsExtractor):
                         # extract all string literals
                         sub_matches = re.finditer(r'([^"]*)(?P<string>"[^"]*?")', match.group(0))
                         for sub in sub_matches:
-                            log_line = sub.groupdict()['string']
-                            results.append([file, log_line])
+                            results.append({
+                                'filename': file,
+                                'logline': sub.groupdict()['string']
+                            })
         print(results)
         self.persistor.dump_records(results)
 
