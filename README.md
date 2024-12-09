@@ -33,3 +33,10 @@ In the worst case, where every log line needs to be analyzed individually, the c
 
 𝑇(𝑛) = 𝑂(𝑛.log(𝑛)))
 Where n is the total number of log lines. The O(n log n) term arises because for each of the log n levels of recursion, you potentially analyze n log lines.
+
+# Other optimisations to consider
+- Dynamic Batch Sizing
+- Heuristic-Based Threshold Adjustment
+- Parallel Processing
+- Caching common log lines
+- Log Grouping ( same function logs will always get logged if invoked )
