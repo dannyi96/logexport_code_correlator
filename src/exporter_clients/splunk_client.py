@@ -9,19 +9,18 @@ from src.query_generators.splunk_query_generator import SplunkQueryGenerator
 
 class SplunkClient(ExporterClient):
     def __init__(self, **kwargs):
-        host = kwargs.get('host')
-        username = kwargs.get('username')
-        password = kwargs.get('password')
-        index = kwargs.get('index')
-        scheme = kwargs.get('scheme', 'https')
+        self.host = kwargs.get('host')
+        self.username = kwargs.get('username')
+        self.password = kwargs.get('password')
+        self.index = kwargs.get('index')
+        self.scheme = kwargs.get('scheme', 'https')
 
-        self.scheme = scheme
         # import socket; socket.getaddrinfo('localhost', 8000)
         self.client = splunklib.client.connect(
-                            host=host, 
+                            host=self.host, 
                             #port=port, 
-                            username=username, 
-                            password=password, 
+                            username=self.username, 
+                            password=self.password, 
                             autologin=True,
                             scheme=self.scheme
                     )
@@ -31,8 +30,7 @@ class SplunkClient(ExporterClient):
     def get_stats_for_log(self, log_line, **kwargs):
         isJobComplete, tot_bytes, tot_events = (False, -1, -1)
         try:
-            index = kwargs.get('index', 'main')
-            query = self.query_generator.generate_query_for_logs(log_line, index=index)
+            query = self.query_generator.generate_query_for_logs(log_line, index=self.index)
             job = self.client.jobs.create(query)
             isJobComplete, results, tot_events = self.__getSplunkJobResults(job)
             tot_bytes = results[0]['bytes']
@@ -44,8 +42,7 @@ class SplunkClient(ExporterClient):
     def get_stats_for_logs(self, log_lines, **kwargs):
         isJobComplete, tot_bytes, tot_events = (False, -1, -1)
         try:
-            index = kwargs.get('index', 'main')
-            query = self.query_generator.generate_query_for_logs(log_lines, index=index)
+            query = self.query_generator.generate_query_for_logs(log_lines, index=self.index)
             job = self.client.jobs.create(query)
             isJobComplete, results, tot_events = self.__getSplunkJobResults(job)
             tot_bytes = results[0]['bytes']

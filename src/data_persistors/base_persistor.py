@@ -1,10 +1,14 @@
-class BasePersistor:
+from abc import abstractmethod, ABC
+class BasePersistor(ABC):
 
-    def __init__(self, **kwargs):
+    @abstractmethod
+    def __init__(self, file_name, **kwargs):
         pass
 
+    @abstractmethod
     def dump_record(self, record):
         pass
 
+    @abstractmethod
     def dump_records(self, records):
         pass

@@ -11,7 +11,8 @@ class CSVReader(BaseReader):
         self.df = pd.read_csv(self.filename, delimiter='\t')
 
 
-    def read(self, offset, batch_count, fields=None):
+    def read(self, offset, fields=None):
+        # TODO: avoid pandas dependency
         if fields:
             return self.df[fields][offset:].head(1).tolist()
         return self.df[offset:].head(1).tolist()
