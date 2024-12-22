@@ -1,5 +1,6 @@
 import csv
-from src.data_models.log_stat import LogStat
+import dataclasses
+from src.data_models import *
 from src.data_persistors.csv_persistor import CSVPersistor
 from src.data_readers.csv_reader import CSVReader
 from src.log_strings_extractor.regex_log_extractor import RegexLogLineExtractor
@@ -44,7 +45,7 @@ class StatsGenerator:
         dump_status = False
         if tot_events <= threshold:
             dump_status = True
-            self.persistor.dump_records([LogStat(log_query[0], log_query[1], tot_events, tot_bytes, "UPPER_BOUND").as_dict()
+            self.persistor.dump_records([dataclasses.asdict(LogStat(log_query[0], log_query[1], tot_events, tot_bytes, Accuracy.UPPER_BOUND))
                                             for log_query in log_queries ])
         
         return dump_status            
@@ -53,8 +54,8 @@ class StatsGenerator:
         
         for log_query in log_queries:
             isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_log(log_query)
-            accuracy = "PRECISE" if isJobComplete == True else "LOWER_BOUND"
-            self.persistor.dump_record(LogStat(log_query[0], log_query[1], tot_events, tot_bytes, accuracy).as_dict())
+            accuracy = Accuracy.PRECISE if isJobComplete == True else Accuracy.LOWER_BOUND
+            self.persistor.dump_record(dataclasses.asdict(LogStat(log_query[0], log_query[1], tot_events, tot_bytes, accuracy)))
 
 
 if __name__ == '__main__':
