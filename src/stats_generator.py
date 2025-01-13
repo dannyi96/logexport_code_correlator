@@ -65,6 +65,7 @@ if __name__ == '__main__':
                                 username='danielis', 
                                 password='danielis',
                                 index='main')
+
     log_extractor = RegexLogLineExtractor(
             logline_regex = r'print\((.*)\)', 
             logs_file = 'log.csv'

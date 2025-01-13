@@ -15,8 +15,7 @@ class LogInfo:
 
 @dataclass
 class LogStat:
-    filename: str
-    logline: str
+    loginfo: LogInfo
     tot_events: int
     tot_bytes: int
     accuracy: Accuracy

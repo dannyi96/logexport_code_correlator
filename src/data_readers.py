@@ -1,7 +1,19 @@
-import csv
-from src.data_readers.base_reader import BaseReader
-
+from abc import abstractmethod, ABC
 import pandas as pd
+
+class BaseReader(ABC):
+    @abstractmethod
+    def __init__(self, filename):
+        pass
+
+    @abstractmethod
+    def read(self):
+        pass
+
+    @abstractmethod
+    def read_batch(self, batch_count):
+        pass
+
 
 class CSVReader(BaseReader):
     def __init__(self, filename):
@@ -24,9 +36,3 @@ class CSVReader(BaseReader):
         if fields:
             return self.df[fields][offset:].head(batch_count).tolist()
         return self.df[offset:].head(batch_count).tolist()
-    
-    
-    
-    
-    
-    

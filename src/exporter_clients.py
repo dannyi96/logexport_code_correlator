@@ -1,10 +1,22 @@
-#! /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
-import sys
+from abc import abstractmethod, ABC
 import time
 import splunklib.client
 import splunklib.results
-from src.exporter_clients.exporter_client import ExporterClient
-from src.query_generators.splunk_query_generator import SplunkQueryGenerator
+from query_generators import SplunkQueryGenerator
+
+class ExporterClient(ABC):
+
+    @abstractmethod
+    def __init__(self, **kwargs):
+        pass
+
+    @abstractmethod
+    def get_stats_for_logs(self, log_lines, **kwargs):
+        pass
+
+    @abstractmethod
+    def get_stats_for_log(self, log_line, **kwargs):
+        pass
 
 
 class SplunkClient(ExporterClient):
@@ -98,13 +110,3 @@ class SplunkClient(ExporterClient):
         
         print(response)
         return isJobComplete, response, eventCount
-
-
-if __name__ == '__main__':
-    print('='*200)    
-    splunk_stat_generator = SplunkClient(host='localhost', 
-                                username='danielis', 
-                                password='danielis',
-                                index='main') 
-    splunk_stat_generator.get_stats_for_logs( [ "test" ])
-    print('='*200)

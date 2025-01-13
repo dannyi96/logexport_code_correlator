@@ -1,8 +1,17 @@
-import sys
+from abc import abstractmethod, ABC
 import re
 import os
-from src.log_strings_extractor.log_strings_extractor import LogStringsExtractor
-from src.data_persistors.csv_persistor import CSVPersistor
+from data_persistors import CSVPersistor
+
+class LogStringsExtractor(ABC):
+    @abstractmethod
+    def __init__(self, **kwargs) -> None:
+        pass
+
+    @abstractmethod
+    def extract_logs(self, codebase_folder: str) -> None:
+        pass
+
 
 class RegexLogLineExtractor(LogStringsExtractor):
     def __init__(self, **kwargs) -> None:
