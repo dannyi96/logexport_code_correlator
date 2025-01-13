@@ -1,9 +1,8 @@
-import csv
 import dataclasses
-from src.data_models import *
-from src.data_persistors.csv_persistor import CSVPersistor
-from src.data_readers.csv_reader import CSVReader
-from src.log_strings_extractor.regex_log_extractor import RegexLogLineExtractor
+from data_models import *
+from data_persistors import CSVPersistor
+from data_readers import CSVReader
+from log_strings_extractor import RegexLogLineExtractor
 
 class StatsGenerator:
     def __init__(self, exporter_client, log_extractor, output_file='log_stats.csv', **kwargs):
@@ -59,7 +58,7 @@ class StatsGenerator:
 
 
 if __name__ == '__main__':
-    from src.exporter_clients.splunk_client import SplunkClient
+    from exporter_clients import SplunkClient
     import os
     splunk_client = SplunkClient(host='localhost', 
                                 username='danielis', 
