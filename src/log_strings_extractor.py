@@ -2,10 +2,11 @@ from abc import abstractmethod, ABC
 import re
 import os
 from data_persistors import CSVPersistor
+from typing import Any
 
 class LogStringsExtractor(ABC):
     @abstractmethod
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: dict[str, Any]) -> None:
         pass
 
     @abstractmethod
@@ -14,7 +15,7 @@ class LogStringsExtractor(ABC):
 
 
 class RegexLogLineExtractor(LogStringsExtractor):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: dict[str, Any]) -> None:
         self.logline_regex = kwargs.get("logline_regex", r'print\((.*)\)')
         self.logs_file = kwargs.get("logs_file", 'log.csv')
         self.persistor = CSVPersistor(file=self.logs_file, headers=['filename', 'logline'])

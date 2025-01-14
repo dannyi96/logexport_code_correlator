@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from typing import Any
 import time
 import splunklib.client
 import splunklib.results
@@ -7,25 +8,25 @@ from query_generators import SplunkQueryGenerator
 class ExporterClient(ABC):
 
     @abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict[str, Any]):
         pass
 
     @abstractmethod
-    def get_stats_for_logs(self, log_lines, **kwargs):
+    def get_stats_for_logs(self, log_lines: list[str], **kwargs: dict[str, Any]):
         pass
 
     @abstractmethod
-    def get_stats_for_log(self, log_line, **kwargs):
+    def get_stats_for_log(self, log_line: str, **kwargs: dict[str, Any]):
         pass
 
 
 class SplunkClient(ExporterClient):
-    def __init__(self, **kwargs):
-        self.host = kwargs.get('host')
-        self.username = kwargs.get('username')
-        self.password = kwargs.get('password')
-        self.index = kwargs.get('index')
-        self.scheme = kwargs.get('scheme', 'https')
+    def __init__(self, **kwargs: dict[str, Any]):
+        self.host: str = kwargs.get('host')
+        self.username: str = kwargs.get('username')
+        self.password: str = kwargs.get('password')
+        self.index: str = kwargs.get('index')
+        self.scheme: str = kwargs.get('scheme', 'https')
 
         # import socket; socket.getaddrinfo('localhost', 8000)
         self.client = splunklib.client.connect(

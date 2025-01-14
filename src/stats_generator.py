@@ -1,11 +1,13 @@
 import dataclasses
 from data_models import *
-from data_persistors import CSVPersistor
-from data_readers import CSVReader
-from log_strings_extractor import RegexLogLineExtractor
+from data_persistors import *
+from data_readers import *
+from log_strings_extractor import *
+from exporter_clients import *
 
 class StatsGenerator:
-    def __init__(self, exporter_client, log_extractor, output_file='log_stats.csv', **kwargs):
+    def __init__(self, exporter_client: ExporterClient, log_extractor: LogStringsExtractor, 
+                 output_file: str='log_stats.csv', **kwargs: dict[str, Any]) -> None:
         self.client = exporter_client
         # extract logs
         self.logline_regex = kwargs.get("logline_regex", r'print\((.*)\)')
@@ -22,7 +24,7 @@ class StatsGenerator:
                                                'accuracy', 'tot_events', 
                                                'tot_bytes'])
     
-    def generate_stats(self, **kwargs):
+    def generate_stats(self, **kwargs: dict[str, Any]) -> None:
         # extract logs
         self.log_extractor.extract_logs(self.codebase_dir)
         self.log_csv_reader = CSVReader(self.logs_file)
@@ -32,14 +34,14 @@ class StatsGenerator:
             threshold=self.threshold
         )
     
-    def __analyse_log_csv(self, start_index=0, batch_size=10, threshold=10000000):
+    def __analyse_log_csv(self, start_index: int = 0, batch_size: int = 10, threshold: int =10000000):
         batched_rows = self.log_csv_reader.read_batch(start_index, batch_size, 'logline')
         print(batched_rows)
         batch_analyse_dump_status = self.batch_analyse_dump(batched_rows, threshold)
         if batch_analyse_dump_status == False:
             self.sequence_analyse_dump(batched_rows)
 
-    def batch_analyse_dump(self, log_queries, threshold):
+    def batch_analyse_dump(self, log_queries: list[str], threshold: int):
         isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_logs(log_queries)
         dump_status = False
         if tot_events <= threshold:
@@ -49,7 +51,7 @@ class StatsGenerator:
         
         return dump_status            
 
-    def sequence_analyse_dump(self, log_queries):
+    def sequence_analyse_dump(self, log_queries: list[str]):
         
         for log_query in log_queries:
             isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_log(log_query)
@@ -58,7 +60,6 @@ class StatsGenerator:
 
 
 if __name__ == '__main__':
-    from exporter_clients import SplunkClient
     import os
     splunk_client = SplunkClient(host='localhost', 
                                 username='danielis', 
