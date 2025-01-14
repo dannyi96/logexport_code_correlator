@@ -1,4 +1,5 @@
 import dataclasses
+from typing import Dict, List
 from data_models import *
 from data_persistors import *
 from data_readers import *
@@ -7,7 +8,7 @@ from exporter_clients import *
 
 class StatsGenerator:
     def __init__(self, exporter_client: ExporterClient, log_extractor: LogStringsExtractor, 
-                 output_file: str='log_stats.csv', **kwargs: dict[str, Any]) -> None:
+                 output_file: str='log_stats.csv', **kwargs: Dict[str, Any]) -> None:
         self.client = exporter_client
         # extract logs
         self.logline_regex = kwargs.get("logline_regex", r'print\((.*)\)')
@@ -24,7 +25,7 @@ class StatsGenerator:
                                                'accuracy', 'tot_events', 
                                                'tot_bytes'])
     
-    def generate_stats(self, **kwargs: dict[str, Any]) -> None:
+    def generate_stats(self, **kwargs: Dict[str, Any]) -> None:
         # extract logs
         self.log_extractor.extract_logs(self.codebase_dir)
         self.log_csv_reader = CSVReader(self.logs_file)
@@ -41,7 +42,7 @@ class StatsGenerator:
         if batch_analyse_dump_status == False:
             self.sequence_analyse_dump(batched_rows)
 
-    def batch_analyse_dump(self, log_queries: list[str], threshold: int):
+    def batch_analyse_dump(self, log_queries: List[str], threshold: int):
         isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_logs(log_queries)
         dump_status = False
         if tot_events <= threshold:
@@ -51,7 +52,7 @@ class StatsGenerator:
         
         return dump_status            
 
-    def sequence_analyse_dump(self, log_queries: list[str]):
+    def sequence_analyse_dump(self, log_queries: List[str]):
         
         for log_query in log_queries:
             isJobComplete, tot_bytes, tot_events = self.client.get_stats_for_log(log_query)
